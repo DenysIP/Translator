@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Translator Interface</title>
+    <style>
+        .container {
+            max-width: 500px;
+            margin: 50px auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            text-align: center;
+            font-family: Arial, sans-serif;
+        }
+
+        textarea {
+            width: 100%;
+            height: 100px;
+            margin: 10px 0;
+            padding: 10px;
+            font-size: 16px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        #translationResult {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Translator</h2>
+    <textarea id="inputText" placeholder="Enter text to translate..."></textarea>
+    <button onclick="translateText()">Translate</button>
+    <div id="translationResult"></div>
+</div>
+
+<script>
+    function translateText() {
+        const inputText = document.getElementById("inputText").value;
+
+        fetch("/", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+                "X-CSRFToken": "{{ csrf_token }}"
+            },
+            body: `input_text=${encodeURIComponent(inputText)}`
+        })
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById("translationResult").innerText = data.translated_text;
+        })
+        .catch(error => console.error("Error:", error));
+    }
+</script>
+
+</body>
+</html>
